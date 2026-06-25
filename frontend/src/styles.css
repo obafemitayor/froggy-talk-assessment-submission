@@ -1,0 +1,111 @@
+@import 'tailwindcss';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+@source './**/*.{js,jsx}';
+
+@layer base {
+    :root {
+        color-scheme: light;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        min-height: 100vh;
+        margin: 0;
+        background:
+            radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 28%),
+            radial-gradient(circle at top right, rgba(245, 158, 11, 0.12), transparent 24%),
+            linear-gradient(180deg, #f8fbff 0%, #edf3fb 48%, #e7eef8 100%);
+        color: #0f172a;
+        font-family: var(--font-sans);
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    input,
+    select,
+    button {
+        font: inherit;
+    }
+}
+
+@layer components {
+    .shell {
+        @apply relative min-h-screen overflow-hidden px-4 py-8 sm:px-6 lg:px-10;
+    }
+
+    .shell::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+            linear-gradient(rgba(148, 163, 184, 0.09) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(148, 163, 184, 0.09) 1px, transparent 1px);
+        background-size: 72px 72px;
+        mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+        opacity: 0.18;
+    }
+
+    .glass {
+        @apply rounded-[2rem] border border-slate-200/80 bg-white/75 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl;
+    }
+
+    .soft {
+        @apply rounded-3xl border border-slate-200/80 bg-white/75 p-5 shadow-sm shadow-slate-200/70;
+    }
+
+    .chip {
+        @apply inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600;
+    }
+
+    .field {
+        @apply w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-sky-400/70 focus:ring-2 focus:ring-sky-400/20;
+    }
+
+    .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 1rem;
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        transition: all 150ms ease;
+    }
+
+    .button:disabled {
+        cursor: not-allowed;
+    }
+
+    .button-primary {
+        @apply bg-slate-900 text-white hover:bg-slate-800;
+    }
+
+    .button-secondary {
+        @apply border border-slate-200 bg-white text-slate-700 hover:bg-slate-50;
+    }
+}
+
+@keyframes float {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.animate-float {
+    animation: float 7s ease-in-out infinite;
+}

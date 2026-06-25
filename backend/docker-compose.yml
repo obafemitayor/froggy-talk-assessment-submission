@@ -1,0 +1,188 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: froggytalk-app
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - db
+      - redis
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: http://localhost
+      FRONTEND_URL: http://localhost:5173
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: froggytalk
+      DB_USERNAME: froggy
+      DB_PASSWORD: secret
+      CACHE_STORE: redis
+      QUEUE_CONNECTION: redis
+      REDIS_CLIENT: predis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_QUEUE_CONNECTION: default
+      BROADCAST_CONNECTION: reverb
+      REVERB_SERVER_HOST: 0.0.0.0
+      REVERB_SERVER_PORT: 8080
+      REVERB_APP_ID: local
+      REVERB_APP_KEY: local
+      REVERB_APP_SECRET: local-secret
+      REVERB_HOST: reverb
+      REVERB_PORT: 8080
+      REVERB_SCHEME: http
+      JWT_SECRET: ${JWT_SECRET}
+    command: php-fpm
+
+  web:
+    image: nginx:1.27-alpine
+    container_name: froggytalk-web
+    ports:
+      - "8088:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app
+
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: froggytalk-queue
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - db
+      - redis
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: http://localhost
+      FRONTEND_URL: http://localhost:5173
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: froggytalk
+      DB_USERNAME: froggy
+      DB_PASSWORD: secret
+      CACHE_STORE: redis
+      QUEUE_CONNECTION: redis
+      REDIS_CLIENT: predis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      BROADCAST_CONNECTION: reverb
+      REVERB_APP_ID: local
+      REVERB_APP_KEY: local
+      REVERB_APP_SECRET: local-secret
+      REVERB_HOST: reverb
+      REVERB_PORT: 8080
+      REVERB_SCHEME: http
+      JWT_SECRET: ${JWT_SECRET}
+    command: php artisan queue:work redis --tries=1 --timeout=0
+
+  reverb:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: froggytalk-reverb
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - redis
+      - db
+    environment:
+      APP_ENV: local
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: froggytalk
+      DB_USERNAME: froggy
+      DB_PASSWORD: secret
+      CACHE_STORE: redis
+      BROADCAST_CONNECTION: reverb
+      REDIS_CLIENT: predis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REVERB_SERVER_HOST: 0.0.0.0
+      REVERB_SERVER_PORT: 8080
+      REVERB_APP_ID: local
+      REVERB_APP_KEY: local
+      REVERB_APP_SECRET: local-secret
+      REVERB_HOST: reverb
+      REVERB_PORT: 8080
+      REVERB_SCHEME: http
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080
+
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: froggytalk-tests
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - db-test
+      - redis
+    environment:
+      APP_ENV: testing
+      APP_DEBUG: "false"
+      DB_CONNECTION: mysql
+      DB_HOST: db-test
+      DB_PORT: 3306
+      DB_DATABASE: froggytalk_test
+      DB_USERNAME: froggy
+      DB_PASSWORD: secret
+      QUEUE_CONNECTION: sync
+      CACHE_STORE: array
+      SESSION_DRIVER: array
+      BROADCAST_CONNECTION: reverb
+      REDIS_CLIENT: predis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET}
+      REVERB_APP_ID: testing
+      REVERB_APP_KEY: testing
+      REVERB_APP_SECRET: testing-secret
+      REVERB_HOST: reverb
+      REVERB_SERVER_HOST: 0.0.0.0
+      REVERB_SERVER_PORT: 8080
+      REVERB_PORT: 8080
+      REVERB_SCHEME: http
+    command: ./vendor/bin/phpunit --configuration=phpunit.docker.xml
+
+  redis:
+    image: redis:7-alpine
+    container_name: froggytalk-redis
+
+  db:
+    image: mysql:8.4
+    container_name: froggytalk-db
+    environment:
+      MYSQL_DATABASE: froggytalk
+      MYSQL_USER: froggy
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: rootsecret
+    volumes:
+      - db-data:/var/lib/mysql
+
+  db-test:
+    image: mysql:8.4
+    container_name: froggytalk-db-test
+    environment:
+      MYSQL_DATABASE: froggytalk_test
+      MYSQL_USER: froggy
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: rootsecret
+    volumes:
+      - db-test-data:/var/lib/mysql
+
+volumes:
+  db-data:
+  db-test-data:

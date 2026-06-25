@@ -149,6 +149,8 @@ docker compose run --rm tests
 
 This uses the Docker test service and `phpunit.docker.xml` so tests run against the dedicated test database.
 
+(Here)[https://www.loom.com/share/1a95133587a6456a9cc0ddc307f83432] is a short video that demos how the application looks like
+
 ## Architecture Overview
 
 - The React SPA lives in `frontend/` and talks to the Laravel API through REST endpoints and WebSockets.

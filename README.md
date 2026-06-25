@@ -80,44 +80,56 @@ froggytalk/
 
 From the `backend/` directory:
 
-Set `JWT_SECRET` in your backend environment before starting Docker:
-
-```bash
-export JWT_SECRET=your-secret-value
-```
-
-Install the backend dependencies through Docker Compose:
-
-```bash
-docker compose run --rm app composer install
-```
-
-Then start the stack:
+1. Create a `backend/.env` file and set `JWT_SECRET` there.
+2. Start the stack:
 
 ```bash
 docker compose up -d --build
 ```
 
-This starts the Laravel API, MySQL, Redis, the queue worker, and Reverb.
+3. Install the backend dependencies through Docker Compose:
 
-After the containers are running, apply the database migrations:
+```bash
+docker compose run --rm app composer install
+```
+
+4. Apply the database migrations:
 
 ```bash
 docker compose exec app php artisan migrate --force
 ```
 
-Then seed the default test user:
+5. Seed the default test user:
 
 ```bash
 docker compose exec app php artisan db:seed --force
 ```
 
+This starts the Laravel API, MySQL, Redis, the queue worker, and Reverb.
+
 ### Frontend
 
 From the `frontend/` directory:
 
+1. Create a `.env.local` file with:
+
+```bash
+VITE_API_BASE_URL=http://localhost:8088
+VITE_REVERB_KEY=local
+VITE_REVERB_HOST=localhost
+VITE_REVERB_PORT=8080
+VITE_REVERB_SCHEME=http
+```
+
+2. Install the frontend dependencies:
+
 ```bash
 npm install
+```
+
+3. Start the frontend:
+
+```bash
 npm run dev
 ```
 

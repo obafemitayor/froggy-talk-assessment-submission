@@ -80,8 +80,8 @@ froggytalk/
 
 From the `backend/` directory:
 
-1. Create a `backend/.env` file and set `JWT_SECRET` there.
-2. Start the stack:
+1. Create a `backend/.env` file and add a `JWT_SECRET` key with any value of your choice.
+2. Start the containers using the command below:
 
 ```bash
 docker compose up -d --build
@@ -99,19 +99,17 @@ docker compose run --rm app composer install
 docker compose exec app php artisan migrate --force
 ```
 
-5. Seed the default test user:
+5. Seed the database with a test user:
 
 ```bash
 docker compose exec app php artisan db:seed --force
 ```
 
-This starts the Laravel API, MySQL, Redis, the queue worker, and Reverb.
-
 ### Frontend
 
 From the `frontend/` directory:
 
-1. Create a `.env.local` file with:
+1. Create a `frontend/.env.local` file with the following enviroment variables:
 
 ```bash
 VITE_API_BASE_URL=http://localhost:8088

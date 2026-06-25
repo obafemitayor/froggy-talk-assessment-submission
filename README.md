@@ -72,6 +72,7 @@ froggytalk/
 
 - Docker and Docker Compose
 - Node.js 20+ and npm if you want to run the frontend outside Docker
+- PHP Composer if you want to install backend dependencies on the host
 - A `JWT_SECRET` value available to the backend Compose environment
 
 ## How To Launch The App
@@ -79,6 +80,18 @@ froggytalk/
 ### Backend
 
 From the `backend/` directory:
+
+```bash
+composer install
+```
+
+Set `JWT_SECRET` in your backend environment before starting Docker:
+
+```bash
+export JWT_SECRET=your-secret-value
+```
+
+Then start the stack:
 
 ```bash
 docker compose up -d --build
@@ -141,4 +154,5 @@ This uses the Docker test service and `phpunit.docker.xml` so tests run against 
 ## What I Would Improve With More Time
 
 - Add extensive frontend tests using `react-testing-library`
+- Automate backend container dependency setup so that migrations and packages are done automatically when the container starts
 - Improve the UI design

@@ -86,6 +86,12 @@ docker compose up -d --build
 
 This starts the Laravel API, MySQL, Redis, the queue worker, and Reverb.
 
+After the containers are running, apply the database migrations:
+
+```bash
+docker compose exec app php artisan migrate --force
+```
+
 ### Frontend
 
 From the `frontend/` directory:

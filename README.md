@@ -80,7 +80,7 @@ froggytalk/
 
 From the `backend/` directory:
 
-1. Create a `backend/.env` file and add a `JWT_SECRET` key with any value of your choice.
+1. Create a `backend/.env` file and add a `JWT_SECRET` key with any value of your choice. You can use this as a value `pPIUkt1uIVYWMjAYPnhBdUOobCE3ODk6wbjtrPzBe3oFswrgcwd7DQ03YK3Mu4M2`
 2. Start the containers using the command below:
 
 ```bash

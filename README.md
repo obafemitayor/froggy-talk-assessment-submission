@@ -92,6 +92,12 @@ After the containers are running, apply the database migrations:
 docker compose exec app php artisan migrate --force
 ```
 
+Then seed the default test user:
+
+```bash
+docker compose exec app php artisan db:seed --force
+```
+
 ### Frontend
 
 From the `frontend/` directory:
